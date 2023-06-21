@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<EmBitz_debug_session>
+	<debuggerLastSession>
+		<watches>
+			<watch key="Tick" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="adc_average_v_hi" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="adc_average_v_mid" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="adc_iteration_count" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="adc_value_temper" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="adc_value_v_hi" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="adc_value_v_mid" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="mode" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="uart_buffer" format="0" array="1" start="0" count="7" expanded="1" live="0" />
+		</watches>
+		<memory_view address="0x0" locked="0" live="0" options="290" />
+	</debuggerLastSession>
+</EmBitz_debug_session>
