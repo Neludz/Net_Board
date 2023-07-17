@@ -98,7 +98,7 @@
 			<Add option="-Wunused" />
 			<Add option="-fdata-sections" />
 			<Add option="-ffunction-sections" />
-			<Add option="-Os" />
+			<Add option="-O0" />
 			<Add option="-g3" />
 			<Add option="-fno-strict-aliasing" />
 			<Add symbol="ARM_MATH_CM3" />
@@ -253,6 +253,10 @@
 		<Unit filename="src\ebmon.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="src\eeprom_emulation.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\eeprom_emulation.h" />
 		<Unit filename="src\IO.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -274,6 +278,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\modbus_reg.h" />
+		<Unit filename="src\optic_data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\optic_data.h" />
 		<Unit filename="src\startup_stm32f103xb.S">
 			<Option compilerVar="CC" />
 			<Option weight="0" />

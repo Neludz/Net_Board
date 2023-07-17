@@ -11,8 +11,8 @@
 #include "FreeRTOS.h"
 #include "timers.h"
 
-#define VERSION_NB			201
-#define WATCH_DOG_TIME_MS		500
+#define VERSION_NB			        201
+#define WATCH_DOG_TIME_MS		    5000
 
 #define RESET_VALUE					0xA01	//2561
 #define FACTORY_SET_VALUE 			0xB01	//2817
@@ -29,12 +29,8 @@
 #define M_MODBUS_TASK_STACK_SIZE       (configMINIMAL_STACK_SIZE*2)
 
 void vBlinker (void *pvParameters);
-void Init_IWDG(uint16_t tw);
-void IWDG_res(void);
 void Set_Time_For_Blink (uint32_t On_Timer, uint32_t Off_Timer);
 void Error_Handler(void);
-//uint32_t Main_Timer_Set(const uint32_t AddTimeMs);
-//bool Timer_Is_Expired (const uint32_t Timer);
 
 //=========================================================================
 

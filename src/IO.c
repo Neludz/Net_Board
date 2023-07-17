@@ -3,9 +3,11 @@
 #include <stdbool.h>
 
 #include <stm32f1xx.h>
+#include <stm32f1xx_ll_bus.h>
+#include <stm32f1xx_ll_usart.h>
 #include <IO.h>
 #include <main.h>
-
+#include <modbus_hard.h>
 //--------------X macros---------------------------------------------------------
 const tGPIO_Line IOs[NUM_IO] =
 {
@@ -72,7 +74,6 @@ void IO_ConfigLine(tIOLine Line, uint8_t Mode, uint8_t State)
     IOs[Line].GPIOx->ODR &= ~(1<<IOs[Line].GPIO_Pin);
     IOs[Line].GPIOx->ODR |= State<<IOs[Line].GPIO_Pin;
 }
-
 //---------------------------------------------------------------------------------
 void IO_Init(void)
 {
@@ -89,7 +90,8 @@ void IO_Init(void)
     RCC->APB2ENR	|= RCC_APB2ENR_AFIOEN;
 
 // for PA15
-   // AFIO->MAPR|=AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+ AFIO->MAPR|=AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+
 
 // Set all pins
     for (int Line = 0; Line < NUM_IO; Line++)
@@ -98,6 +100,42 @@ void IO_Init(void)
     }
 }
 
+//---------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void flash_btock(void)
+{
+    if (!(FLASH->OBR & FLASH_OBR_RDPRT))
+    {
+        mh_Factory();	//when first start -> set MBbuf
+
+        FLASH->KEYR = FLASH_KEY1;
+        FLASH->KEYR = FLASH_KEY2;
+
+        FLASH->OPTKEYR = FLASH_KEY1;
+        FLASH->OPTKEYR = FLASH_KEY2;
+        FLASH->CR |= FLASH_CR_OPTER;
+        FLASH->CR|= FLASH_CR_STRT;
+        while ((FLASH->SR & FLASH_SR_BSY) != 0 );
+
+        FLASH->CR |= FLASH_CR_LOCK;
+    }
+}
+//-------------------------------------------------------------------------
+void IO_Init_IWDG(uint16_t tw) // Параметр tw от 7мс до 26200мс
+{
+// Для IWDG_PR=7 Tmin=6,4мс RLR=Tмс*40/256
+    IWDG->KR=0x5555; // Ключ для доступа к таймеру
+    IWDG->PR=7; // Обновление IWDG_PR
+    IWDG->RLR=tw*40/256; // Загрузить регистр перезагрузки
+    IWDG->KR=0xAAAA; // Перезагрузка
+    IWDG->KR=0xCCCC; // Пуск таймера
+}
+//-------------------------------------------------------------------------
+// Функция перезагрузки сторожевого таймера IWDG
+void IO_IWDG_res(void)
+{
+    IWDG->KR=0xAAAA; // Перезагрузка
+}
 
 
 

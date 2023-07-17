@@ -9,6 +9,11 @@
 //-----------------------------------------------------------------------
 
 //-----------------------------------------------------------------------
+// user define
+//-----------------------------------------------------------------------
+#define MB_MODE_LEGACY		(0x00)
+#define MB_MODE_MODERN		(0x01)
+//-----------------------------------------------------------------------
 // define
 //-----------------------------------------------------------------------
 #define MB_LIMIT_REG	    1//check limit
@@ -35,18 +40,13 @@
 //										      Value   Level   Level   |                         |
 //														     or Mask  |                         |
 #define MB_BUF_TABLE\
-	X_BUF(0,	Reg_Start,		        0,		0,		0,      0,      READ_R)\
-	X_BUF(1,	Reg_T_0_Channel,	    0,		0,		0, 		0,	 	READ_R)\
-	X_BUF(2,	Reg_T_1_Channel,	    0,		0,		0, 		0,	 	READ_R)\
-	X_BUF(3,	Reg_T_2_Channel,	    0,		0,		0, 		0,	 	READ_R)\
-	X_BUF(4,	Reg_T_3_Channel,	    0,		0,		0, 		0,		READ_R)\
-	X_BUF(5,	Reg_T_4_Channel,	    0,		0,		0, 		0,		READ_R)\
-	X_BUF(6,	Reg_T_5_Channel,	    0,		0,		0, 		0,		READ_R)\
-	X_BUF(7,	Reg_T_6_Channel,	    0,		0,		0, 		0,		READ_R)\
-	X_BUF(8,	Reg_T_7_Channel,	    0,		0,		0, 		0,		READ_R)\
-	X_BUF(9,	Reg_T_8_Channel,	    0,		0,		0, 		0,		READ_R)\
-	X_BUF(10,	Reg_Cur_RMS_W1,		    0,		0,		0, 		0,		READ_R)\
-	X_BUF(19,	Reg_End,				0,	    0,      0,      0,       READ_R)\
+	X_BUF(0,	Reg_0,  		        0,		0,		0,      0,      READ_R)\
+    X_BUF(50,	Reg_RS485_Baud_Rate,	0,		1,		0,		0x03,	WRITE_R | CB_WR | LIM_MASK)\
+	X_BUF(51,	Reg_RS485_Ans_Delay,	0,	    5,		0,      100,	WRITE_R | CB_WR | LIM_UNSIGN)\
+	X_BUF(52,	Reg_RS485_Modbus_Addr,  0,		127,    1,		0xFA,	WRITE_R | CB_WR | LIM_UNSIGN)\
+	X_BUF(53,	Reg_Parity_Stop_Bits,	0,	    0,	    0,		0x03,	WRITE_R | CB_WR | LIM_UNSIGN)\
+    X_BUF(54,	Reg_54_Optic_Mode,      0,		1,		0,      1,      WRITE_R | CB_WR | LIM_MASK)\
+	X_BUF(55,	Reg_End,				0,	    0,      0,      0,      READ_R)\
 
 
 #endif /* MODBUS_X_H_INCLUDED */

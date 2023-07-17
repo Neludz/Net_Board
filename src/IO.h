@@ -20,6 +20,8 @@
 #define IN_HIZ   (0x04)     //MODE_2
 #define IN_PULL  (0x08)     //MODE_2
 
+
+
 typedef struct
 {
     GPIO_TypeDef* GPIOx;
@@ -38,14 +40,15 @@ typedef struct
     X_IO(io_RS485_Switch,	GPIOB,  1, 			OUT_2MHz,	OUT_PP,  	LOW,  	HIGH)	\
 	X_IO(io_RX,             GPIOB,  11, 		IN,			IN_PULL,  	HIGH,  	HIGH)	\
 	X_IO(io_TX,				GPIOB,  10,         OUT_50MHz,	OUT_APP, 	HIGH,  	HIGH)	\
-	X_IO(io_Addr_0,			GPIOB,  13,         IN,			IN_PULL,	HIGH,  	LOW)	\
-	X_IO(io_Addr_1,			GPIOB,  15,  		IN,			IN_PULL,	HIGH,  	LOW)	\
-	X_IO(io_Addr_2,			GPIOA,  8,  		IN,			IN_PULL,   	HIGH,  	LOW)	\
-	X_IO(io_Addr_3,			GPIOB,  14,  		IN,			IN_PULL,    HIGH,  	LOW)	\
-	X_IO(io_Mul_E,			GPIOB,  7,  		OUT_2MHz,	OUT_PP,		HIGH,  	HIGH)	\
-    X_IO(io_Mul_S0,			GPIOB,  4,  		OUT_2MHz,	OUT_PP,		HIGH,  	HIGH)	\
-    X_IO(io_Mul_S1,			GPIOB,  5,  		OUT_2MHz,	OUT_PP,		HIGH,  	HIGH)	\
-    X_IO(io_Mul_S2,			GPIOB,  6,  		OUT_2MHz,	OUT_PP,		HIGH,  	HIGH)	\
+	X_IO(io_addr0,			GPIOB,  13,         IN,			IN_HIZ,	    HIGH,  	LOW)	\
+	X_IO(io_addr1,			GPIOB,  15,  		IN,			IN_HIZ,	    HIGH,  	LOW)	\
+	X_IO(io_addr2,			GPIOA,  8,  		IN,			IN_HIZ,   	HIGH,  	LOW)	\
+	X_IO(io_addr3,			GPIOB,  14,  		IN,			IN_HIZ,     HIGH,  	LOW)	\
+	X_IO(io_Mul_E,			GPIOB,  7,  		OUT_2MHz,	OUT_PP,		LOW,  	HIGH)	\
+    X_IO(io_Mul_S0,			GPIOB,  4,  		OUT_2MHz,	OUT_PP,		LOW,  	HIGH)	\
+    X_IO(io_Mul_S1,			GPIOB,  5,  		OUT_2MHz,	OUT_PP,		LOW,  	HIGH)	\
+    X_IO(io_Mul_S2,			GPIOB,  6,  		OUT_2MHz,	OUT_PP,		LOW,  	HIGH)	\
+
 
 //USB pins init in default state
 //------========IO_End_Table========------
@@ -66,6 +69,18 @@ typedef enum
     HIGH =1,
 } tIOState;
 
+
+__STATIC_INLINE void IO_optic_uart_start(void)
+{
+
+}
+
+__STATIC_INLINE void IO_optic_uart_stop(void)
+{
+
+}
+
+
 void IO_Init(void);
 void IO_SetLine(tIOLine Line, bool State);
 bool IO_GetLine(uint8_t Input);
@@ -73,11 +88,8 @@ void IO_SetLineActive(tIOLine Line, bool State);
 bool IO_GetLineActive(uint8_t Input);
 void IO_ConfigLine(tIOLine Line, uint8_t Mode, uint8_t State);
 void IO_delay_ms(uint32_t ms);
-
-//example
-//     	i = IO_GetLine(io_LED3);
-//		IO_ConfigLine(io_LED2, OUT_10MHz+OUT_PP, LOW);
-//		IO_ConfigLine(io_ADC, IN+IN_ADC, LOW);
+void IO_Init_IWDG(uint16_t tw);
+void IO_IWDG_res(void);
 
 
 #endif /* _IO_H */

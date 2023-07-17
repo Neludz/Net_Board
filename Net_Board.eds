@@ -2,15 +2,14 @@
 <EmBitz_debug_session>
 	<debuggerLastSession>
 		<watches>
-			<watch key="Tick" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="adc_average_v_hi" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="adc_average_v_mid" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="adc_iteration_count" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="adc_value_temper" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="adc_value_v_hi" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="adc_value_v_mid" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="mode" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="uart_buffer" format="0" array="1" start="0" count="7" expanded="1" live="0" />
+			<watch key="address" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="buf_data" format="0" array="0" start="0" count="0" expanded="1" live="0" />
+			<watch key="lan_error_count_array" format="0" array="1" start="0" count="10" expanded="1" live="0" />
+			<watch key="optic_data" format="0" array="0" start="0" count="0" expanded="1" live="0" />
+			<watch key="optic_data.legacy_error_count" format="2" array="1" start="0" count="12" expanded="1" live="0" />
+			<watch key="optic_data.main_state" format="0" array="0" start="0" count="0" expanded="0" live="0" />
+			<watch key="optic_data.multiplexer_channels_order" format="0" array="1" start="0" count="6" expanded="1" live="0" />
+			<watch key="temp_temp" format="0" array="0" start="0" count="0" expanded="0" live="0" />
 		</watches>
 		<memory_view address="0x0" locked="0" live="0" options="290" />
 	</debuggerLastSession>
