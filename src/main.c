@@ -69,7 +69,6 @@ void vBlinker (void *pvParameters)
         IO_SetLine(io_LED, OFF);
         vTaskDelay(Time_Blink_Off/portTICK_RATE_MS);
         IO_IWDG_res();
-
     }
 }
 

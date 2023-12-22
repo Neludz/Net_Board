@@ -10,13 +10,12 @@
 #define OPTIC_TIME_OUT_MS               50
 #define OPTIC_WAIT_BEFORE_UART_MS       1
 #define OPTIC_CHANNEL_COUNT_PHY         6   // from 0 to 8 ( use 74HCT4051)
-#define OPTIC_CHANNELS_LIST             {5, 4, 3, 0, 1, 2}
+#define OPTIC_CHANNELS_LIST             {2, 1, 0, 3, 4, 5}
 #define OPTIC_LEGACY_CHANNEL_COUNT_PHY  2   // first from list
 #define MB_OPTIC_START_REG              0
 #define LEGACY_MULTIPLEXER_TIMER_MS     100
 #define TASK_NOTIFY_INTERRUPT           0x01
 #define TASK_NOTIFY_TIMER               0x02
-
 //-------------------------------------------------------------------------
 // user prototype
 void optic_init(void);
@@ -30,9 +29,9 @@ void optic_init(void);
 //-------------------------------------------------------------------------
 typedef enum
 {
-    OPT_STATE_IDLE,         // Ready to get a frame
+    OPT_STATE_IDLE,         // OPTIC_INSTANCE is wait to start
     OPT_STATE_RCVE,			// Frame is being received
-    OPT_STATE_WAIT,	        // Frame is wait to start
+    OPT_STATE_WAIT,	        // Ready to get a frame
     OPT_STATE_PARS,			// Frame is being parsed (may take some time)
 } OpticState_t;
 //-------------------------------------------------------------------------
@@ -92,12 +91,10 @@ typedef struct
         .error_lan_flag = instance_name##_lan_error_flag_array,\
         .multiplexer_channels_order = instance_name##_mult_channels_order,\
     };
-
 //-------------------------------------------------------------------------
 // prototype
 void optic_parse_modern(OpticStruct_t *opt_data, uint32_t opt_channel);
 void optic_parse_legacy(OpticStruct_t *opt_data, uint32_t opt_channel);
 void optic_parsing(OpticStruct_t *opt_data, uint32_t opt_channel);
 void optic_legacy_periodic_lan_error_set(OpticStruct_t *opt_data);
-
 #endif /* OPTIC_DATA_H_INCLUDED */

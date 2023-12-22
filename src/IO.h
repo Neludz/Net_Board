@@ -90,7 +90,7 @@ void IO_ConfigLine(tIOLine Line, uint8_t Mode, uint8_t State);
 void IO_delay_ms(uint32_t ms);
 void IO_Init_IWDG(uint16_t tw);
 void IO_IWDG_res(void);
-
+void IO_flash_btock(void);
 
 #endif /* _IO_H */
 
