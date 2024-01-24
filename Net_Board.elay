@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <EmBitz_layout_file>
-	<ActiveTarget name="Debug" />
+	<ActiveTarget name="Release" />
 	<File name="inc\stm32f103xb.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="7330" topLine="108" />
@@ -138,17 +138,17 @@
 	</File>
 	<File name="src\IO.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2639" topLine="54" />
+			<Cursor1 position="2639" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\main.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\main.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2501" topLine="70" />
+			<Cursor1 position="2753" topLine="84" />
 		</Cursor>
 	</File>
-	<File name="src\main.h" open="0" top="0" tabpos="38" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\main.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="677" topLine="0" />
+			<Cursor1 position="892" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="src\modbus.c" open="0" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -161,9 +161,9 @@
 			<Cursor1 position="565" topLine="75" />
 		</Cursor>
 	</File>
-	<File name="src\modbus_config.h" open="0" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\modbus_config.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1936" topLine="23" />
+			<Cursor1 position="697" topLine="11" />
 		</Cursor>
 	</File>
 	<File name="src\modbus_hard.c" open="0" top="0" tabpos="35" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
@@ -181,19 +181,19 @@
 			<Cursor1 position="2282" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\modbus_reg.h" open="0" top="0" tabpos="33" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\modbus_reg.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="941" topLine="22" />
+			<Cursor1 position="369" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="src\optic_data.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\optic_data.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="9487" topLine="245" />
+			<Cursor1 position="1099" topLine="26" />
 		</Cursor>
 	</File>
 	<File name="src\optic_data.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3892" topLine="53" />
+			<Cursor1 position="2373" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="src\startup_stm32f103xb.S" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">

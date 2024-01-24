@@ -247,6 +247,12 @@ void optic_parse_modern(OpticStruct_t *opt_data, uint32_t opt_channel)
             opt_data->error_count[opt_channel] = OPTIC_ERROR_MAX;
             opt_data->mb_reg_p[(opt_channel * 4) + 3] |= 0x01; // lan_error
             opt_data->error_lan_flag[opt_channel] = 1;
+            // U1
+            opt_data->mb_reg_p[(opt_channel * 4)] = 0;
+            // U2
+            opt_data->mb_reg_p[(opt_channel * 4) + 1] = 0;
+            // t
+            opt_data->mb_reg_p[(opt_channel * 4) + 2] = 0;
         }
     }
     else
@@ -264,7 +270,7 @@ void optic_parse_modern(OpticStruct_t *opt_data, uint32_t opt_channel)
         if(opt_data->buf[0] & (1<<3))  opt_data->mb_reg_p[(opt_channel * 4) + 3] |= (0x01<<1);
         else opt_data->mb_reg_p[(opt_channel * 4) + 3] &= ~(0x01<<1);
 
-        if ((opt_data->buf[0]>>4 != (opt_channel +1)) && (opt_data->buf[0]>>4 != (opt_channel + 7)))
+        if ((opt_data->buf[0]>>4 != (opt_channel+1)) && (opt_data->buf[0]>>4 != (opt_channel+7)))
               opt_data->mb_reg_p[(opt_channel * 4) + 3] |= 0x01<<4;
         else
         opt_data->mb_reg_p[(opt_channel * 4) + 3] &= ~(0x01<<4);

@@ -2,12 +2,8 @@
 <EmBitz_debug_session>
 	<debuggerLastSession>
 		<watches>
-			<watch key="buf_counter" format="0" array="0" start="0" count="0" expanded="0" live="0" />
-			<watch key="pwm_buf" format="1" array="1" start="0" count="1000" expanded="1" live="0" />
-			<watch key="rgb_buf" format="0" array="1" start="0" count="45" expanded="0" live="0" />
-			<watch key="ws_1" format="0" array="0" start="0" count="0" expanded="1" live="0" />
-			<watch key="ws_1-&gt;p_pwm_buf" format="0" array="1" start="0" count="48" expanded="0" live="0" />
-			<watch key="ws_1_current_data" format="0" array="0" start="0" count="0" expanded="1" live="0" />
+			<watch key="adc1_data" format="1" array="1" start="0" count="2" expanded="1" live="0" />
+			<watch key="adc_iteration_count" format="0" array="0" start="0" count="0" expanded="0" live="0" />
 		</watches>
 		<memory_view address="0x0" locked="0" live="0" options="290" />
 	</debuggerLastSession>
