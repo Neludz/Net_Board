@@ -83,10 +83,13 @@ static void IO_Uart_Optic_Init(void)
     LL_USART_SetTransferDirection(USART1, LL_USART_DIRECTION_RX);
     LL_USART_EnableIT_IDLE(USART1);
     LL_USART_EnableIT_RXNE(USART1);
-    LL_USART_ConfigCharacter(USART1, LL_USART_DATAWIDTH_9B, LL_USART_PARITY_NONE,
-                             LL_USART_STOPBITS_1);
-    LL_USART_Enable(USART1);
 
+    if (MBbuf_main[Reg_54_Optic_Mode] == MB_MODE_LEGACY)
+        LL_USART_ConfigCharacter(USART1, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
+    else
+        LL_USART_ConfigCharacter(USART1, LL_USART_DATAWIDTH_9B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
+
+    LL_USART_Enable(USART1);
     NVIC_SetPriority(USART1_IRQn,14);
     NVIC_EnableIRQ (USART1_IRQn);
 }
@@ -101,24 +104,29 @@ static void set_multiplexer_channel (uint32_t channel)
 // user task
 void v_optic_task (void *pvParameters)
 {
-    uint32_t i, ulNotifiedValue;
+    uint32_t i = 0, ulNotifiedValue;
     IO_SetLine(io_Mul_E, LOW);
     BaseType_t notify_ret;
     IO_Uart_Optic_Init();
     while(1)
     {
-        for(i = 0; i<OPTIC_CHANNEL_COUNT_PHY; i++)
+        // check if one size error when multiplexer switch on a middle of the frame.
+        if (optic_data.frame_error != OPT_RET_SIZE_ERROR && optic_data.error_count[i] != 1)
         {
+            i++;
+            if (i >= OPTIC_CHANNEL_COUNT_PHY)
+                i=0;
             set_multiplexer_channel(i);
             vTaskDelay(OPTIC_WAIT_BEFORE_UART_MS/portTICK_RATE_MS);
-            optic_data.main_state = OPT_STATE_WAIT;
-            notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_MS/portTICK_RATE_MS);
-            optic_data.main_state = OPT_STATE_PARS;
-            if(notify_ret == pdFALSE)
-                optic_data.frame_error = OPT_RET_TIMEOUT;
-
-            optic_parse_modern((OpticStruct_t*)&optic_data, i);
         }
+        optic_data.main_state = OPT_STATE_WAIT;
+        notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_MS/portTICK_RATE_MS);
+        optic_data.main_state = OPT_STATE_PARS;
+        if(notify_ret == pdFALSE)
+        {
+            optic_data.frame_error = OPT_RET_TIMEOUT;
+        }
+        optic_parse_modern((OpticStruct_t*)&optic_data, i);
     }
 }
 //-------------------------------------------------------------------------
@@ -136,7 +144,7 @@ void v_optic_legacy_task (void *pvParameters)
         notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_MS/portTICK_RATE_MS );
         optic_data.main_state = OPT_STATE_PARS;
         if(notify_ret == pdFALSE)
-                optic_data.frame_error = OPT_RET_TIMEOUT;
+            optic_data.frame_error = OPT_RET_TIMEOUT;
 
         optic_parse_legacy((OpticStruct_t*)&optic_data, i);
 
@@ -147,19 +155,15 @@ void v_optic_legacy_task (void *pvParameters)
             {
                 i = 0;
                 optic_legacy_periodic_lan_error_set(&optic_data);
-                //printf("_______optic_legacy_periodic_lan_error_set \n");
             }
             set_multiplexer_channel(i);
             vTaskDelay(OPTIC_WAIT_BEFORE_UART_MS/portTICK_RATE_MS);
-          //  printf("_______xSemaphoreTake \n");
-
         }
     }
 }
 //-------------------------------------------------------------------------
 void multiplexer_timer_callback (xTimerHandle xTimer)
 {
-   // printf("xSemaphoreGive \n");
     xSemaphoreGive( xSemaphore );
 }
 //-------------------------------------------------------------------------
@@ -172,7 +176,6 @@ void optic_init(void)
         multiplexer_timer_handle = xTimerCreate( "Timer", LEGACY_MULTIPLEXER_TIMER_MS/portTICK_RATE_MS, pdTRUE, ( void * ) 0, multiplexer_timer_callback);
         vSemaphoreCreateBinary( xSemaphore );
     }
-
     else
     {
         if(pdTRUE != xTaskCreate(v_optic_task, "optic", configMINIMAL_STACK_SIZE*2, NULL, tskIDLE_PRIORITY + 1, &optic_task_handle)) ERROR_ACTION(TASK_NOT_CREATE,0);
@@ -229,11 +232,21 @@ unsigned char dallas_crc8(const unsigned int size, uint16_t *buf)
 static bool invalid_frame_modern(OpticStruct_t *opt_data)
 {
     if( OPT_RET_OK != opt_data->frame_error)
+    {
         return true;
+    }
+
     if( 7 != opt_data->count_data)
+    {
+        opt_data->frame_error = OPT_RET_SIZE_ERROR;
         return true;
+    }
+
     if(dallas_crc8( opt_data->count_data, opt_data->buf))
+    {
         return true;
+    }
+
     return false;
 }
 //-------------------------------------------------------------------------
@@ -271,9 +284,9 @@ void optic_parse_modern(OpticStruct_t *opt_data, uint32_t opt_channel)
         else opt_data->mb_reg_p[(opt_channel * 4) + 3] &= ~(0x01<<1);
 
         if ((opt_data->buf[0]>>4 != (opt_channel+1)) && (opt_data->buf[0]>>4 != (opt_channel+7)))
-              opt_data->mb_reg_p[(opt_channel * 4) + 3] |= 0x01<<4;
+            opt_data->mb_reg_p[(opt_channel * 4) + 3] |= 0x01<<4;
         else
-        opt_data->mb_reg_p[(opt_channel * 4) + 3] &= ~(0x01<<4);
+            opt_data->mb_reg_p[(opt_channel * 4) + 3] &= ~(0x01<<4);
     }
 }
 //-------------------------------------------------------------------------

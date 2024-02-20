@@ -238,7 +238,7 @@ uint8_t * USBD_FS_LangIDStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
   {
     COMPOSITE_SIZ_STRING_PRODUCT,          /* bLength */
     USB_DESC_TYPE_STRING,        /* bDescriptorType */
-    'M', 0, 'S', 0, 'D', 0, '_', 0, '2', 0, ' ', 0, 'C', 0,
+    'O', 0, 'P', 0, 'T', 0, 'B', 0, 'D', 0, ' ', 0, 'C', 0,
     'o', 0, 'm', 0, 'p', 0, 'o', 0, 's', 0, 'i', 0, 't', 0,
     'e', 0,' ',0, 'M', 0, 'S', 0, 'C', 0, '+', 0, 'C', 0, 'D', 0, 'C', 0
   };
@@ -269,7 +269,7 @@ uint8_t * USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length
     COMPOSITE_SIZ_STRING_VENDOR, /* Size of Vendor string */
     USB_DESC_TYPE_STRING,  /* bDescriptorType*/
     /* Manufacturer:  */
-    'M', 0, 'S', 0, 'D', 0, '_', 0, '2', 0
+    'O', 0, 'P', 0, 'T', 0, 'B', 0, 'D', 0
   };
 
 uint8_t * USBD_FS_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
@@ -291,7 +291,7 @@ uint8_t * USBD_FS_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *l
   {
     COMPOSITE_SIZ_STRING_SERIAL,           /* bLength */
     USB_DESC_TYPE_STRING,        /* bDescriptorType */
-    'M', 0, 'S', 0, 'D', 0,'_', 0,'2', 0
+    'O', 0, 'P', 0, 'T', 0,'B', 0,'D', 0
   };
 
 uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)

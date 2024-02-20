@@ -23,7 +23,7 @@ void optic_init(void);
 //-------------------------------------------------------------------------
 // system define
 #define OPTIC_BUF_SIZE              8
-#define OPTIC_ERROR_MAX             2
+#define OPTIC_ERROR_MAX             3
 #define OPTIC_LEGACY_ERROR_MAX      4
 #define LEGACY_CHANNEL_COUNT        12
 //-------------------------------------------------------------------------

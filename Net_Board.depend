@@ -365,12 +365,18 @@
 1687435026 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\clock.c
 	"stm32f1xx_ll_rcc.h"
 
-1687268130 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\ebmon.c
-	"ebmon.h"
-
-1687268131 d:\dropbox\gg\rectifier\code\net_board_embitz\src\ebmon.h
+1687435026 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\eeprom_emulation.c
+	<eeprom_emulation.h>
+	<stm32f1xx.h>
 	<stdint.h>
-	<stdio.h>
+	"FreeRTOS.h"
+	"semphr.h"
+
+1680139096 d:\dropbox\gg\rectifier\code\net_board_embitz\src\eeprom_emulation.h
+	<stdint.h>
+
+1678699683 d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\freertos\include\semphr.h
+	"queue.h"
 
 1696946100 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\io.c
 	<stdint.h>
@@ -386,6 +392,13 @@
 	<stdint.h>
 	<stdbool.h>
 	<stm32f1xx.h>
+
+1687944926 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.h
+	"FreeRTOS.h"
+	"semphr.h"
+	"task.h"
+	"queue.h"
+	"timers.h"
 
 1694154601 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\main.c
 	<stdio.h>
@@ -422,22 +435,16 @@
 	"main.h"
 	"modbus_hard.h"
 
-1687944926 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.h
-	"FreeRTOS.h"
-	"semphr.h"
-	"task.h"
-	"queue.h"
-	"timers.h"
-
-1678699683 d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\freertos\include\semphr.h
-	"queue.h"
-
 1680157907 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus.h
 	<stdint.h>
 	<stdbool.h>
 	"modbus_config.h"
 
 1678699684 d:\dropbox\gg\rectifier\code\net_board_embitz\src\clock.h
+
+1708083924 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.h
+	<stdint.h>
+	<stdbool.h>
 
 1678699684 d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\emfat.h
 	<stddef.h>
@@ -456,7 +463,7 @@
 	<stdio.h>
 	"modbus_reg.h"
 
-1687954257 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.c
+1706099121 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.c
 	"modbus_hard.h"
 	"modbus.h"
 	"modbus_reg.h"
@@ -483,6 +490,25 @@
 	"modbus_reg.h"
 	"modbus.h"
 
+1708434194 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.c
+	<optic_data.h>
+	<stdint.h>
+	<stdbool.h>
+	<stdio.h>
+	<stm32f1xx.h>
+	<stm32f1xx_ll_bus.h>
+	<stm32f1xx_ll_usart.h>
+	<IO.h>
+	<main.h>
+	<modbus_config.h>
+	<modbus_reg.h>
+	"FreeRTOS.h"
+	"task.h"
+	"queue.h"
+	"semphr.h"
+	"timers.h"
+	"limits.h"
+
 1678699683 source:d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\freertos\croutine.c
 	"FreeRTOS.h"
 	"task.h"
@@ -490,6 +516,11 @@
 
 1678699684 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\system_stm32f1xx.c
 	"stm32f1xx.h"
+
+1687954787 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app.c
+	"main.h"
+	"emfat.h"
+	"stdlib.h"
 
 1680024124 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usb_device.c
 	"usb_device.h"
@@ -513,12 +544,7 @@
 	"usbd_cdc_if.h"
 	"modbus_hard.h"
 
-1687954787 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app.c
-	"main.h"
-	"emfat.h"
-	"stdlib.h"
-
-1678699684 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usbd_desc.c
+1707407007 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usbd_desc.c
 	"usbd_core.h"
 	"usbd_desc.h"
 	"usbd_conf.h"
@@ -547,36 +573,10 @@
 	"usbd_cdc.h"
 	"usbd_msc.h"
 
-1687435026 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\eeprom_emulation.c
-	<eeprom_emulation.h>
-	<stm32f1xx.h>
-	<stdint.h>
-	"FreeRTOS.h"
-	"semphr.h"
+1687268130 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\ebmon.c
+	"ebmon.h"
 
-1680139096 d:\dropbox\gg\rectifier\code\net_board_embitz\src\eeprom_emulation.h
+1687268131 d:\dropbox\gg\rectifier\code\net_board_embitz\src\ebmon.h
 	<stdint.h>
-
-1688730810 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.c
-	<optic_data.h>
-	<stdint.h>
-	<stdbool.h>
 	<stdio.h>
-	<stm32f1xx.h>
-	<stm32f1xx_ll_bus.h>
-	<stm32f1xx_ll_usart.h>
-	<IO.h>
-	<main.h>
-	<modbus_config.h>
-	<modbus_reg.h>
-	"FreeRTOS.h"
-	"task.h"
-	"queue.h"
-	"semphr.h"
-	"timers.h"
-	"limits.h"
-
-1699002821 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.h
-	<stdint.h>
-	<stdbool.h>
 
