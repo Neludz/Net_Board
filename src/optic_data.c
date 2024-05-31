@@ -19,8 +19,6 @@
 #include "timers.h"
 #include "limits.h"
 
-
-
 //-------------------------------------------------------------------------
 // user variable
 TaskHandle_t optic_task_handle;
@@ -36,7 +34,12 @@ void USART1_IRQHandler (void)
     uint16_t cnt;
     portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
     (void) cnt;
-    if (LL_USART_IsActiveFlag_RXNE(USART1))
+    if (USART1->SR & (USART_SR_FE | USART_SR_ORE | USART_SR_NE))
+    {
+        cnt = USART1->DR;
+        optic_data.frame_error = OPT_RET_DATA_ERROR;
+    }
+    else if (LL_USART_IsActiveFlag_RXNE(USART1))
     {
         switch (optic_data.main_state)
         {
@@ -132,12 +135,12 @@ void v_optic_task (void *pvParameters)
 //-------------------------------------------------------------------------
 void v_optic_legacy_task (void *pvParameters)
 {
-    uint32_t i, ulNotifiedValue;
+    uint32_t i=0, ulNotifiedValue;
     BaseType_t notify_ret;
     IO_SetLine(io_Mul_E, LOW);
     IO_Uart_Optic_Init();
     xTimerStart(multiplexer_timer_handle, 0);
-    i = 0;
+
     while(1)
     {
         optic_data.main_state = OPT_STATE_WAIT;
