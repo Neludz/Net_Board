@@ -123,7 +123,7 @@ void v_optic_task (void *pvParameters)
             vTaskDelay(OPTIC_WAIT_BEFORE_UART_MS/portTICK_RATE_MS);
         }
         optic_data.main_state = OPT_STATE_WAIT;
-        notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_MS/portTICK_RATE_MS);
+        notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_MODERN_MS/portTICK_RATE_MS);
         optic_data.main_state = OPT_STATE_PARS;
         if(notify_ret == pdFALSE)
         {
@@ -144,7 +144,7 @@ void v_optic_legacy_task (void *pvParameters)
     while(1)
     {
         optic_data.main_state = OPT_STATE_WAIT;
-        notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_MS/portTICK_RATE_MS );
+        notify_ret = xTaskNotifyWait(0x00, ULONG_MAX, &ulNotifiedValue, OPTIC_TIME_OUT_LEGACY_MS/portTICK_RATE_MS );
         optic_data.main_state = OPT_STATE_PARS;
         if(notify_ret == pdFALSE)
             optic_data.frame_error = OPT_RET_TIMEOUT;

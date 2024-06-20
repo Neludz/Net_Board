@@ -7,7 +7,8 @@
 //-------------------------------------------------------------------------
 // user define
 #define OPTIC_UART_BAUD                 38400
-#define OPTIC_TIME_OUT_MS               50
+#define OPTIC_TIME_OUT_MODERN_MS        50
+#define OPTIC_TIME_OUT_LEGACY_MS        70
 #define OPTIC_WAIT_BEFORE_UART_MS       1
 #define OPTIC_CHANNEL_COUNT_PHY         6   // from 0 to 8 ( use 74HCT4051)
 #define OPTIC_CHANNELS_LIST             {2, 1, 0, 3, 4, 5}
