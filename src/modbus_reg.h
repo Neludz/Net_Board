@@ -34,7 +34,30 @@ enum
     MB_NUM_BUF=(REG_END_REGISTER+1)
 };
 #endif
-
+//-----------------------------------------------------------------------
+// Instance
+//-----------------------------------------------------------------------
+#define MB_SLAVE_INSTANCE_DEF(instance_name,            \
+                                main_buf,               \
+                                main_buf_size,          \
+                                write_callback,         \
+                                start_trans_cb,         \
+                                start_recieve_cb)       \
+static uint8_t instance_name##_mb_buf[MB_FRAME_MAX];    \
+static volatile mb_slave_t (instance_name) = {          \
+            .p_write = main_buf,                        \
+            .p_read = main_buf,                         \
+            .reg_read_last = MB_NUM_BUF-1,              \
+            .reg_write_last = MB_NUM_BUF-1,             \
+            .cb_state = MB_CB_FREE,                     \
+            .er_frame_bad = EV_NOEVENT,                 \
+            .mb_state = MB_STATE_IDLE,                  \
+            .p_mb_buff = instance_name##_mb_buf,        \
+            .wr_callback = write_callback,              \
+            .start_trans = start_trans_cb,              \
+            .start_receive = start_recieve_cb,          \
+            .slave_address = MB_ANY_ADDRESS,            \
+            };
 //-----------------------------------------------------------------------
 //  prototype
 //-----------------------------------------------------------------------

@@ -92,7 +92,7 @@ struct  mb_slave_s					// Main program passes interface data to Modbus stack.
     uint16_t    *p_write;			// Pointer to the begin of ParsIn array. Modbus writes data in the array
     uint16_t    *p_read;			// Pointer to the begin of ParsWk array. Modbus takes data from the array
     uint16_t    reg_read_last;		//
-    uint16_t    reg_write_last;		//
+    uint16_t    reg_write_last;		//MB_NUM_BUF
 #if (MB_CALLBACK_REG == 1)
     uint16_t    cb_reg_start;		// function modbus write here data start index
     uint8_t	    cb_index;			// and how many registers are pending validation
@@ -113,34 +113,9 @@ struct  mb_slave_s					// Main program passes interface data to Modbus stack.
                                                     //so as not to change buffer while parsing it
 };
 //-----------------------------------------------------------------------
-// Instance
-//-----------------------------------------------------------------------
-#define MB_SLAVE_INSTANCE_DEF(instance_name,            \
-                                main_buf,               \
-                                main_buf_size,          \
-                                write_callback,         \
-                                start_trans_cb,         \
-                                start_recieve_cb)       \
-static uint8_t instance_name##_mb_buf[MB_FRAME_MAX];    \
-static volatile mb_slave_t (instance_name) = {          \
-            .p_write = main_buf,                        \
-            .p_read = main_buf,                         \
-            .reg_read_last = MB_NUM_BUF-1,              \
-            .reg_write_last = MB_NUM_BUF-1,             \
-            .cb_state = MB_CB_FREE,                     \
-            .er_frame_bad = EV_NOEVENT,                 \
-            .mb_state = MB_STATE_IDLE,                  \
-            .p_mb_buff = instance_name##_mb_buf,        \
-            .wr_callback = write_callback,              \
-            .start_trans = start_trans_cb,              \
-            .start_receive = start_recieve_cb,          \
-            .slave_address = MB_ANY_ADDRESS,            \
-            };
-//-----------------------------------------------------------------------
 // Prototypes for functions
 //-----------------------------------------------------------------------
 void mb_parsing(mb_slave_t *p_instance);
 void mb_set_address(mb_slave_t *p_instance, uint8_t address);
-
 
 #endif /* MODBUS_H_INCLUDED */

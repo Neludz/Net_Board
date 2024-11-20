@@ -360,4 +360,3 @@ void optic_legacy_periodic_lan_error_set(OpticStruct_t *opt_data)
         }
     }
 }
-

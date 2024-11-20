@@ -185,8 +185,6 @@ static void mh_usb_transmit_start (mb_slave_t *p_instance)
 }
 
 //-----------------------------------------------------------------------
-
-//-----------------------------------------------------------------------
 static void io_uart3_init(void)
 {
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3);
