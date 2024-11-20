@@ -25,8 +25,8 @@ TaskHandle_t optic_task_handle;
 TimerHandle_t multiplexer_timer_handle;
 SemaphoreHandle_t xSemaphore;
 
-extern uint16_t MBbuf_main[];
-OPTIC_INSTANCE_DEF(optic_data, OPTIC_CHANNELS_LIST, OPTIC_CHANNEL_COUNT_PHY, &MBbuf_main[MB_OPTIC_START_REG]);
+extern uint16_t mb_buf_main[];
+OPTIC_INSTANCE_DEF(optic_data, OPTIC_CHANNELS_LIST, OPTIC_CHANNEL_COUNT_PHY, &mb_buf_main[MB_OPTIC_START_REG]);
 //-------------------------------------------------------------------------
 // user interrupt
 void USART1_IRQHandler (void)
@@ -87,7 +87,7 @@ static void IO_Uart_Optic_Init(void)
     LL_USART_EnableIT_IDLE(USART1);
     LL_USART_EnableIT_RXNE(USART1);
 
-    if (MBbuf_main[Reg_54_Optic_Mode] == MB_MODE_LEGACY)
+    if (mb_buf_main[Reg_54_Optic_Mode] == MB_MODE_LEGACY)
         LL_USART_ConfigCharacter(USART1, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
     else
         LL_USART_ConfigCharacter(USART1, LL_USART_DATAWIDTH_9B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
@@ -140,7 +140,6 @@ void v_optic_legacy_task (void *pvParameters)
     IO_SetLine(io_Mul_E, LOW);
     IO_Uart_Optic_Init();
     xTimerStart(multiplexer_timer_handle, 0);
-
     while(1)
     {
         optic_data.main_state = OPT_STATE_WAIT;
@@ -148,9 +147,7 @@ void v_optic_legacy_task (void *pvParameters)
         optic_data.main_state = OPT_STATE_PARS;
         if(notify_ret == pdFALSE)
             optic_data.frame_error = OPT_RET_TIMEOUT;
-
         optic_parse_legacy((OpticStruct_t*)&optic_data, i);
-
         if( xSemaphoreTake(xSemaphore, 0) == pdTRUE )
         {
             i++;
@@ -173,7 +170,7 @@ void multiplexer_timer_callback (xTimerHandle xTimer)
 // create task
 void optic_init(void)
 {
-    if(MBbuf_main[Reg_54_Optic_Mode] == MB_MODE_LEGACY)
+    if(mb_buf_main[Reg_54_Optic_Mode] == MB_MODE_LEGACY)
     {
         if(pdTRUE != xTaskCreate(v_optic_legacy_task, "OpticLegacy", configMINIMAL_STACK_SIZE*2, NULL, tskIDLE_PRIORITY + 1, &optic_task_handle)) ERROR_ACTION(TASK_NOT_CREATE,0);
         multiplexer_timer_handle = xTimerCreate( "Timer", LEGACY_MULTIPLEXER_TIMER_MS/portTICK_RATE_MS, pdTRUE, ( void * ) 0, multiplexer_timer_callback);
@@ -241,7 +238,6 @@ static bool invalid_frame_modern(OpticStruct_t *opt_data)
 
     if( 7 != opt_data->count_data)
     {
-        opt_data->frame_error = OPT_RET_SIZE_ERROR;
         return true;
     }
 
@@ -322,7 +318,6 @@ void optic_parse_legacy(OpticStruct_t *opt_data, uint32_t opt_channel)
 
     if (!invalid_frame_legacy(opt_data))
     {
-        //printf("!invalid_frame_legacy+++++++%d \n", opt_channel);
         // lan error coun reset
         address = opt_data->buf[0]>>3;
         if(address <= LEGACY_CHANNEL_COUNT && address != 0)

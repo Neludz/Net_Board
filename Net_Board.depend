@@ -276,7 +276,7 @@
 1678699683 d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\ll\stm32f1xx_ll_bus.h
 	"stm32f1xx.h"
 
-1678699683 source:d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\stm32_usb_device_library\class\cdc\src\usbd_cdc.c
+1732109762 source:d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\stm32_usb_device_library\class\cdc\src\usbd_cdc.c
 	"usbd_cdc.h"
 	"usbd_ctlreq.h"
 	"stm32f1xx_hal.h"
@@ -346,7 +346,7 @@
 1678699683 source:d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\stm32_usb_device_library\core\src\usbd_core.c
 	"usbd_core.h"
 
-1687268528 source:d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\stm32_usb_device_library\core\src\usbd_ctlreq.c
+1732109762 source:d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\stm32_usb_device_library\core\src\usbd_ctlreq.c
 	"usbd_ctlreq.h"
 	"usbd_ioreq.h"
 
@@ -378,7 +378,7 @@
 1678699683 d:\dropbox\gg\rectifier\code\net_board_embitz\libraries\freertos\include\semphr.h
 	"queue.h"
 
-1696946100 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\io.c
+1732023177 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\io.c
 	<stdint.h>
 	<stdbool.h>
 	<stm32f1xx.h>
@@ -388,19 +388,20 @@
 	<main.h>
 	<modbus_hard.h>
 
-1696946153 d:\dropbox\gg\rectifier\code\net_board_embitz\src\io.h
+1732022975 d:\dropbox\gg\rectifier\code\net_board_embitz\src\io.h
 	<stdint.h>
 	<stdbool.h>
 	<stm32f1xx.h>
 
-1687944926 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.h
+1732108036 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.h
 	"FreeRTOS.h"
 	"semphr.h"
 	"task.h"
 	"queue.h"
 	"timers.h"
+	"modbus.h"
 
-1718880548 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\main.c
+1732109819 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\main.c
 	<stdio.h>
 	"main.h"
 	<modbus_reg.h>
@@ -424,25 +425,25 @@
 	"stm32f1xx_hal.h"
 	"emfat.h"
 	"usb_device.h"
+	"log_nel.h"
 
-1679994391 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_reg.h
+1732028315 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_reg.h
 	<stdint.h>
 	"modbus_config.h"
 	"modbus.h"
 
-1697031045 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_config.h
+1732109762 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_config.h
 	<stdint.h>
 	"main.h"
-	"modbus_hard.h"
 
-1680157907 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus.h
+1732105671 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus.h
 	<stdint.h>
 	<stdbool.h>
 	"modbus_config.h"
 
 1678699684 d:\dropbox\gg\rectifier\code\net_board_embitz\src\clock.h
 
-1718891395 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.h
+1718892402 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.h
 	<stdint.h>
 	<stdbool.h>
 
@@ -457,13 +458,13 @@
 	"stm32f1xx_hal.h"
 	"usbd_def.h"
 
-1680175125 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus.c
+1732105306 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus.c
 	"modbus.h"
 	"modbus_config.h"
 	<stdio.h>
 	"modbus_reg.h"
 
-1717065575 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.c
+1732109762 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_hard.c
 	"modbus_hard.h"
 	"modbus.h"
 	"modbus_reg.h"
@@ -481,16 +482,17 @@
 	<stdio.h>
 	"usbd_cdc_if.h"
 	<eeprom_emulation.h>
+	"log_nel.h"
 
 1678699684 d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usbd_cdc_if.h
 	"usbd_cdc.h"
 
-1683703460 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_reg.c
+1732024328 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_reg.c
 	"modbus_config.h"
 	"modbus_reg.h"
 	"modbus.h"
 
-1718891417 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.c
+1732024282 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.c
 	<optic_data.h>
 	<stdint.h>
 	<stdbool.h>
@@ -540,7 +542,7 @@
 1678699684 d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usbd_storage_if.h
 	"usbd_msc.h"
 
-1678699684 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usbd_cdc_if.c
+1732024328 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\usb_device\app\usbd_cdc_if.c
 	"usbd_cdc_if.h"
 	"modbus_hard.h"
 
@@ -579,4 +581,8 @@
 1687268131 d:\dropbox\gg\rectifier\code\net_board_embitz\src\ebmon.h
 	<stdint.h>
 	<stdio.h>
+
+1718294703 d:\dropbox\gg\rectifier\code\net_board_embitz\src\log_nel.h
+	<stdio.h>
+	<string.h>
 

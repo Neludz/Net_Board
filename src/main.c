@@ -36,6 +36,8 @@ Info:
 
 #include "usb_device.h"
 
+#define LOG_MODULE  MAIN
+#include "log_nel.h"
 //====================== Variables ======================
 extern uint16_t MBbuf_main[];
 
@@ -74,7 +76,7 @@ void vBlinker (void *pvParameters)
 
 void vPrint (void *pvParameters)
 {
- printf ( "vPrint \n" );
+    LOG_INFO ("vPrint");
     while(1)
     {
         vTaskDelay(1500/portTICK_RATE_MS);
@@ -103,28 +105,28 @@ int main(void)
 {
     ClockInit();
     IO_Init();
-    mh_Buf_Init();
-#ifndef DEBU_USER
+    mh_buf_init();
+#ifndef DEBUG_TARGET
     IO_flash_btock();
 #endif
 
     emfat_init(&emfat, "NB", entries);
     MX_USB_DEVICE_Init();
-#ifndef DEBU_USER
+#ifndef DEBUG_TARGET
     IO_Init_IWDG(WATCH_DOG_TIME_MS);
 #endif
     optic_init();
 
     if(pdTRUE != xTaskCreate(vBlinker, "Blinker", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL)) ERROR_ACTION(TASK_NOT_CREATE,0);
-#ifdef DEBU_USER
+#ifdef DEBUG_TARGET
     if(pdTRUE != xTaskCreate(vPrint, "Print", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL)) ERROR_ACTION(TASK_NOT_CREATE,0);
 #endif
-    mh_Modbus_Init();   //create task for modbus
+    mh_modbus_init();   //create task for modbus
 
     /*	start OS	*/
-#ifdef DEBU_USER
-    printf ( "[ INFO ] Program start now\n" );
-#endif
+
+    LOG_INFO ("Program start now");
+
     vTaskStartScheduler();
     return 0;
 }

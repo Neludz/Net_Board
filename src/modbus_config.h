@@ -3,11 +3,6 @@
 
 #include <stdint.h>
 #include "main.h"
-#include "modbus_hard.h"
-//-----------------------------------------------------------------------
-// Modbus registers X macros
-//-----------------------------------------------------------------------
-
 //-----------------------------------------------------------------------
 // user define
 //-----------------------------------------------------------------------
@@ -24,7 +19,9 @@
 //#define MB_REG_END_TO_END
 
 #define REG_END_REGISTER                Reg_End
-
+//-----------------------------------------------------------------------
+// Modbus registers X macros
+//-----------------------------------------------------------------------
 //  MAIN_BUF_Start_Table_Mask
 #define USER_FUNC		(0x20)
 #define USER_ARG		(0x10)
@@ -41,9 +38,9 @@
 //														     or Mask  |                         |
 #define MB_BUF_TABLE\
 	X_BUF(0,	Reg_0,  		        0,		0,		0,      0,      READ_R)\
-    X_BUF(50,	Reg_RS485_Baud_Rate,	0,		1,		0,		0x03,	WRITE_R | CB_WR | LIM_MASK)\
-	X_BUF(51,	Reg_RS485_Ans_Delay,	0,	    5,		0,      100,	WRITE_R | CB_WR | LIM_UNSIGN)\
-	X_BUF(52,	Reg_RS485_Modbus_Addr,  0,		127,    1,		0xFA,	WRITE_R | CB_WR | LIM_UNSIGN)\
+    X_BUF(50,	reg_rs485_baud_rate,	0,		1,		0,		0x03,	WRITE_R | CB_WR | LIM_MASK)\
+	X_BUF(51,	reg_rs485_ans_delay,	0,	    5,		0,      100,	WRITE_R | CB_WR | LIM_UNSIGN)\
+	X_BUF(52,	reg_rs485_modbus_addr,  0,		127,    1,		0xFA,	WRITE_R | CB_WR | LIM_UNSIGN)\
 	X_BUF(53,	Reg_Parity_Stop_Bits,	0,	    0,	    0,		0x03,	WRITE_R | CB_WR | LIM_UNSIGN)\
     X_BUF(54,	Reg_54_Optic_Mode,      0,		MB_MODE_MODERN,\
                                                         0,      1,      WRITE_R | CB_WR | LIM_MASK)\

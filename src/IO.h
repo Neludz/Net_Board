@@ -37,7 +37,7 @@ typedef struct
 #define IO_TABLE\
 	X_IO(io_LED,			GPIOB,	12,			OUT_2MHz,	OUT_PP,		LOW,  	HIGH)	\
 	X_IO(io_RX_Optic,       GPIOA,  10, 		IN,			IN_HIZ,  	HIGH,  	HIGH)	\
-    X_IO(io_RS485_Switch,	GPIOB,  1, 			OUT_2MHz,	OUT_PP,  	LOW,  	HIGH)	\
+    X_IO(io_rs485_switch,	GPIOB,  1, 			OUT_2MHz,	OUT_PP,  	LOW,  	HIGH)	\
 	X_IO(io_RX,             GPIOB,  11, 		IN,			IN_PULL,  	HIGH,  	HIGH)	\
 	X_IO(io_TX,				GPIOB,  10,         OUT_50MHz,	OUT_APP, 	HIGH,  	HIGH)	\
 	X_IO(io_addr0,			GPIOB,  13,         IN,			IN_HIZ,	    HIGH,  	LOW)	\

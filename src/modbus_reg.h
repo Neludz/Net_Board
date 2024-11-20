@@ -5,19 +5,17 @@
 #include "modbus_config.h"
 #include "modbus.h"
 
-typedef enum
-{
-    MB_ERROR 		= 0x00,
-    MB_OK 		    = 0x01
-} MBError_t;
+//-----------------------------------------------------------------------
+// Configurations
+//-----------------------------------------------------------------------
 
 typedef struct
 {
-    uint16_t		Default_Value;
-    uint16_t		Min_Level;
-    uint16_t		Max_Level_Mask;
-    uint32_t		Options;
-} RegParameters_t;
+    uint16_t		default_value;
+    uint16_t		min_level;
+    uint16_t		max_level_mask;
+    uint32_t		options;
+} mbreg_parameters_t;
 
 #if (MB_REG_END_TO_END == 1)
 enum
@@ -40,13 +38,11 @@ enum
 //-----------------------------------------------------------------------
 //  prototype
 //-----------------------------------------------------------------------
-
-MBError_t mb_instance_idle_check (MBStruct_t *st_mb);
-MBError_t mb_reg_limit_check (uint16_t Number_Reg, uint16_t Value);
-MBError_t mb_reg_option_check (uint16_t number, uint16_t option_mask);
-RegParameters_t mb_getRegParam (uint16_t number);
-const void* mb_getRegUserArg1 (uint16_t number);
-
-MBError_t mb_reg_write_option_check (uint16_t number);
-MBError_t mb_reg_CB_option_check (uint16_t number);
+mb_error_t mbreg_instance_idle_check (mb_slave_t *p_instance);
+mb_error_t mbreg_limit_check (uint16_t number_reg, uint16_t value);
+mb_error_t mbreg_option_check (uint16_t number, uint16_t option_mask);
+mbreg_parameters_t mbreg_get_param (uint16_t number);
+const void* mbreg_get_user_arg1 (uint16_t number);
+mb_error_t mbreg_write_option_check (uint16_t number);
+mb_error_t mbreg_cb_option_check (uint16_t number);
 #endif /* MODBUS_REG_H_INCLUDED*/

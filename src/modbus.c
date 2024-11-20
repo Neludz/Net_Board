@@ -9,7 +9,7 @@
 //  CRC
 //----------------------------------------------------------------------
 
-/* Table of CRC values for high–order byte */
+// Table of CRC values for high–order byte
 static const uint16_t wCRCTable[] =
 {
     0X0000, 0XC0C1, 0XC181, 0X0140, 0XC301, 0X03C0, 0X0280, 0XC241,
@@ -44,9 +44,10 @@ static const uint16_t wCRCTable[] =
     0X4E00, 0X8EC1, 0X8F81, 0X4F40, 0X8D01, 0X4DC0, 0X4C80, 0X8C41,
     0X4400, 0X84C1, 0X8581, 0X4540, 0X8701, 0X47C0, 0X4680, 0X8641,
     0X8201, 0X42C0, 0X4380, 0X8341, 0X4100, 0X81C1, 0X8081, 0X4040
-} ;
+};
 
-static unsigned int mb_CRC16 ( unsigned char *puchMsg, unsigned int usDataLen )
+//-----------------------------------------------------------------------
+static unsigned int mb_crc16 ( unsigned char *puchMsg, unsigned int usDataLen )
 {
     uint8_t nTemp;
     uint16_t wCRCWord = 0xFFFF;
@@ -63,13 +64,13 @@ static unsigned int mb_CRC16 ( unsigned char *puchMsg, unsigned int usDataLen )
 //-----------------------------------------------------------------------
 //  function
 //----------------------------------------------------------------------
-
+//
 #if (MB_CALLBACK_REG == 1)
-static CBState_t mb_cb_check_in_request (uint16_t Start_Reg, uint16_t Count)
+static mb_cb_state_t mb_cb_check_in_request (uint16_t start_reg, uint16_t count)
 {
-    for (int32_t i = 0; i < Count; i++)
+    for (int32_t i = 0; i < count; i++)
     {
-        if(mb_reg_CB_option_check(Start_Reg+i)==MB_OK)
+        if(mbreg_cb_option_check(start_reg+i) == MB_OK)
         {
             return MB_CB_PRESENT;
         }
@@ -78,16 +79,15 @@ static CBState_t mb_cb_check_in_request (uint16_t Start_Reg, uint16_t Count)
 }
 #endif
 
-// check register limits
+//-----------------------------------------------------------------------
 #if (MB_LIMIT_REG == 1)
-static MBExcep_t mb_reg_limit_check_in_request (uint16_t Number_Reg, uint16_t Value)
+static mb_excep_t mb_reg_limit_check_in_request (uint16_t number_reg, uint16_t value)
 {
-    if (mb_reg_write_option_check(Number_Reg)==MB_ERROR)
+    if (mbreg_write_option_check(number_reg) == MB_ERROR)
     {
         return MBE_ILLEGAL_DATA_ADDRESS;
     }
-
-    if (mb_reg_limit_check (Number_Reg, Value)==MB_ERROR)
+    if (mbreg_limit_check(number_reg, value) == MB_ERROR)
     {
         return	MBE_ILLEGAL_DATA_VALUE;
     }
@@ -95,272 +95,250 @@ static MBExcep_t mb_reg_limit_check_in_request (uint16_t Number_Reg, uint16_t Va
 }
 #endif
 
-static bool invalid_frame( MBStruct_t *mbb)
+//-----------------------------------------------------------------------
+static bool invalid_frame(mb_slave_t *p_instance)
 {
-    uint8_t	PDU_len;
-    if( EV_HAPPEND == mbb->er_frame_bad)
+    uint8_t	pdu_len;
+    if( EV_HAPPEND == p_instance->er_frame_bad)
     {
         return true;
     }
-    if( mbb->mb_index < MB_FRAME_MIN)
+    if( p_instance->mb_index < MB_FRAME_MIN)
     {
         return true;
     }
-    if((mbb->slave_address != mbb->p_mb_buff[0])&(mbb->p_mb_buff[0]!=MB_ADDRESS_BROADCAST)&(mbb->slave_address!=0))
+    if((p_instance->slave_address != p_instance->p_mb_buff[0])&(p_instance->p_mb_buff[0]!=MB_ADDRESS_BROADCAST)&(p_instance->slave_address!=0))
     {
         return true;
     }
 #if (MB_CALLBACK_REG == 1)
-    if(mbb->cb_state!=MB_CB_FREE)
+    if(p_instance->cb_state!=MB_CB_FREE)
     {
         return true;
     }
 #endif
-    PDU_len = mbb->mb_index;
-    if( mb_CRC16( (uint8_t*)mbb->p_mb_buff, PDU_len))
+    pdu_len = p_instance->mb_index;
+    if( mb_crc16( (uint8_t*)p_instance->p_mb_buff, pdu_len))
     {
         return true;
     }
     return false;
 }
 
-
-static bool frame_parse (MBStruct_t *mbb)
+//-----------------------------------------------------------------------
+static bool frame_parse (mb_slave_t *p_instance)
 {
     // Returns TRUE if a response is needed
 #if (MB_LIMIT_REG == 1)
-    uint16_t 	Value, RegIndxInter, j;
+    uint16_t 	value, reg_indx_iter, j;
 #endif
-    uint16_t 	RegIndx, RegNmb, RegLast,   i;
-    uint8_t		BytesN;
-    MBExcep_t	Exception;					// If a Modbus exception happens - we put the var in MBBuff[2]
-
-    bool NeedResponse = true;
-    if( mbb->p_mb_buff[0] == MB_ADDRESS_BROADCAST)
+    uint16_t 	reg_indx, reg_nmb, reg_last, i;
+    uint8_t		bytes_num;
+    mb_excep_t	exception;  // If a Modbus exception happens - we put the var in MBBuff[2]
+    bool need_response = true;
+    if( p_instance->p_mb_buff[0] == MB_ADDRESS_BROADCAST)
     {
-        NeedResponse = false;				// We parse the request but we don'n give a response
+        need_response = false;				// We parse the request but we don'n give a response
     }
-
-    switch( mbb->p_mb_buff[1])
+    switch( p_instance->p_mb_buff[1]) // Function code
     {
-    // Function code
-//--------------------------------------------------
+    case MB_FUNC_READ_INPUT_REGISTER:
     case MB_FUNC_READ_HOLDING_REGISTER:
-        //		  03	0...LASTINDEX-1      0...125
-        // addr  func    AddrHi  AddrLo  QuantHi  QuantLo  CRC CRC
-        //  0	  1			2		3		4		5		 6	7
-        if( 8 == mbb->mb_index)
+        // 03 0...LASTINDEX-1 0...125
+        // 0=addr 1=func 2=AddrHi 3=AddrLo 4=QuantHi 5=QuantLo 6=CRC 7=CRC
+        if( 8 == p_instance->mb_index)
         {
             // In this function mb_index == 8.
-            RegIndx = (mbb->p_mb_buff[2]<<8) | (mbb->p_mb_buff[3]&0xFF);
-            RegNmb  = (mbb->p_mb_buff[4]<<8) | (mbb->p_mb_buff[5]&0xFF);
-            RegLast = RegIndx + RegNmb;
-            if( (RegIndx > mbb->reg_read_last) ||
-                    ((RegLast-1) > mbb->reg_read_last) ||
-                    (RegNmb>MB_MAX_REG) )	// max quantity registers in inquiry
+            reg_indx = (p_instance->p_mb_buff[2]<<8) | (p_instance->p_mb_buff[3]&0xFF);
+            reg_nmb  = (p_instance->p_mb_buff[4]<<8) | (p_instance->p_mb_buff[5]&0xFF);
+            reg_last = reg_indx + reg_nmb;
+            if( (reg_indx > p_instance->reg_read_last) ||
+                    ((reg_last-1) > p_instance->reg_read_last) ||
+                    (reg_nmb>MB_MAX_REG) )	// max quantity registers in inquiry
             {
-                Exception = MBE_ILLEGAL_DATA_ADDRESS;
+                exception = MBE_ILLEGAL_DATA_ADDRESS;
                 break;
             }
             // Make response. MBBuff[0] and MBBuff[1] are ready
-            mbb->p_mb_buff[2] = RegNmb << 1;
-            mbb->mb_index = 3;
-            while( RegIndx < RegLast )
+            p_instance->p_mb_buff[2] = reg_nmb << 1;
+            p_instance->mb_index = 3;
+            while( reg_indx < reg_last )
             {
-                mbb->p_mb_buff[mbb->mb_index++] = (uint8_t)(*(mbb->p_read+RegIndx) >> 8)  ;
-                mbb->p_mb_buff[mbb->mb_index++] = (uint8_t)(*(mbb->p_read+RegIndx) & 0xFF);
-                ++RegIndx;
+                p_instance->p_mb_buff[p_instance->mb_index++] = (uint8_t)(*(p_instance->p_read+reg_indx) >> 8)  ;
+                p_instance->p_mb_buff[p_instance->mb_index++] = (uint8_t)(*(p_instance->p_read+reg_indx) & 0xFF);
+                ++reg_indx;
             }
-            Exception = MBE_NONE;	// OK, make CRC to MBBuff[mb_index] and response is ready
+            exception = MBE_NONE;	// OK, make CRC to MBBuff[mb_index] and response is ready
             break;
         }
-        Exception = MBE_ILLEGAL_DATA_VALUE;	// PDU length incorrect
+        exception = MBE_ILLEGAL_DATA_VALUE;	// PDU length incorrect
         break;
-    //--------------------------------------------------
     case MB_FUNC_WRITE_MULTIPLE_REGISTERS:
-        //		  16	0...LASTINDEX-1      0...125	 0...250
-        // addr  func    AddrHi  AddrLo  QuantHi  QuantLo  Bytes  RG1Hi RG1LO ... CRC CRC
-        //  0	  1			2		3		4		5		 6		7	  8	  ...
-
-        if( mbb->mb_index > 10)
+        // 16 0...LASTINDEX-1 0...125 0...250
+        // 0=addr 1=func 2=AddrHi 3=AddrLo 4=QuantHi 5=QuantLo 6=Bytes 7=RG1Hi 8=RG1LO ...CRC CRC
+        if( p_instance->mb_index > 10)
         {
-            Exception = MBE_NONE;	// ...and mb_index is a length of response
+            exception = MBE_NONE;	// ...and mb_index is a length of response
             // The must: mb_index == 11, 13, 15, ...
-            RegIndx = (mbb->p_mb_buff[2]<<8) | (mbb->p_mb_buff[3]&0xFF);
-            RegNmb  = (mbb->p_mb_buff[4]<<8) | (mbb->p_mb_buff[5]&0xFF);
-            RegLast = RegIndx + RegNmb;
-            BytesN	= mbb->p_mb_buff[6];
-            if(	(RegIndx > mbb->reg_write_last) ||
-                    ((RegLast-1) > mbb->reg_write_last) ||
-                    (RegNmb>MB_MAX_REG))
+            reg_indx = (p_instance->p_mb_buff[2]<<8) | (p_instance->p_mb_buff[3]&0xFF);
+            reg_nmb  = (p_instance->p_mb_buff[4]<<8) | (p_instance->p_mb_buff[5]&0xFF);
+            reg_last = reg_indx + reg_nmb;
+            bytes_num = p_instance->p_mb_buff[6];
+            if(	(reg_indx > p_instance->reg_write_last) ||
+                    ((reg_last-1) > p_instance->reg_write_last) ||
+                    (reg_nmb>MB_MAX_REG))
             {
-                Exception = MBE_ILLEGAL_DATA_ADDRESS;
+                exception = MBE_ILLEGAL_DATA_ADDRESS;
                 break;
             }
-            if( BytesN != (RegNmb << 1) ||
-                    mbb->mb_index != (9+BytesN) )
+            if( bytes_num != (reg_nmb << 1) ||
+                    p_instance->mb_index != (9+bytes_num) )
             {
                 // 1 reg - mb_index=11, 2 regs - 13,... 5 regs - 19, etc.
-                Exception = MBE_ILLEGAL_DATA_VALUE;
+                exception = MBE_ILLEGAL_DATA_VALUE;
                 break;
             }
-
             i = 7;	// Registers' values are from MBBuff[7] and more
-#if (MB_CALLBACK_REG == 1)
-            //=================check EEPROM start==============================
-            mbb->cb_state = mb_cb_check_in_request(RegIndx, RegNmb);
-            if(mbb->cb_state==MB_CB_PRESENT)
+#if (MB_CALLBACK_REG == 1)  //check EEPROM start
+            p_instance->cb_state = mb_cb_check_in_request(reg_indx, reg_nmb);
+            if(p_instance->cb_state==MB_CB_PRESENT)
             {
-                mbb->cb_reg_start = RegIndx;
-                mbb->cb_index = RegNmb;
+                p_instance->cb_reg_start = reg_indx;
+                p_instance->cb_index = reg_nmb;
             }
-            //=================check EEPROM end==============================
-#endif
-
-#if (MB_LIMIT_REG == 1)
-            //=================check data start==============================
+#endif  //check EEPROM end
+#if (MB_LIMIT_REG == 1) //check data start
             j = i;
-            for (RegIndxInter = RegIndx; RegIndxInter < RegLast; RegIndxInter++)
+            for (reg_indx_iter = reg_indx; reg_indx_iter < reg_last; reg_indx_iter++)
             {
-                Value = mbb->p_mb_buff[j++]<<8;
-                Value |= mbb->p_mb_buff[j++];
-                Exception = mb_reg_limit_check_in_request(RegIndxInter, Value);
-                if	(Exception != MBE_NONE)
+                value = p_instance->p_mb_buff[j++]<<8;
+                value |= p_instance->p_mb_buff[j++];
+                exception = mb_reg_limit_check_in_request(reg_indx_iter, value);
+                if	(exception != MBE_NONE)
                 {
                     break;
                 }
             }
-            if(Exception != MBE_NONE)
+            if(exception != MBE_NONE)
             {
                 break;
             }
-            //=================check data end==============================
-#endif
-            while( RegIndx < RegLast)
+#endif  //check data end
+            while( reg_indx < reg_last)
             {
-                *(mbb->p_write+RegIndx)  = mbb->p_mb_buff[i++]<<8;	// High, then Low byte
-                *(mbb->p_write+RegIndx) |= mbb->p_mb_buff[i++]	;	// ... are packed in a WORD
-                ++RegIndx;
+                *(p_instance->p_write+reg_indx)  = p_instance->p_mb_buff[i++]<<8;	// High, then Low byte
+                *(p_instance->p_write+reg_indx) |= p_instance->p_mb_buff[i++]	;	// ... are packed in a WORD
+                ++reg_indx;
             }
-            mbb->mb_index = 6;	// MBBuff[0] to MBBuff[5] are ready (unchanged)
+            p_instance->mb_index = 6;	// MBBuff[0] to MBBuff[5] are ready (unchanged)
             break;
         }
-        Exception = MBE_ILLEGAL_DATA_VALUE;	// PDU length incorrect
+        exception = MBE_ILLEGAL_DATA_VALUE;	// PDU length incorrect
         break;
-
-    //--------------------------------------------------
     case MB_FUNC_WRITE_REGISTER:
-        //		  06		0...250     	 0...255
-        // addr  func    AddrHi  AddrLo   RG1Hi  	RG1LO   CRC		 CRC
-        //  0	  1			2		3		4		  5	     6	 	  7
-
-        if( mbb->mb_index == 8)
+        // 06 0...250 0...255
+        // 0=addr 1=func 2=AddrHi 3=AddrLo 4=RG1Hi 5=RG1LO 6=CRC 7=CRC
+        if( p_instance->mb_index == 8)
         {
-            Exception = MBE_NONE;	// ...and mb_index is a length of response
-            RegIndx = (mbb->p_mb_buff[2]<<8) | (mbb->p_mb_buff[3]&0xFF);
+            exception = MBE_NONE;	// ...and mb_index is a length of response
+            reg_indx = (p_instance->p_mb_buff[2]<<8) | (p_instance->p_mb_buff[3]&0xFF);
 
-            if((RegIndx > mbb->reg_write_last))
+            if((reg_indx > p_instance->reg_write_last))
             {
-                Exception = MBE_ILLEGAL_DATA_ADDRESS;
+                exception = MBE_ILLEGAL_DATA_ADDRESS;
                 break;
             }
-
             i = 4;	// Registers' value are from MBBuff[4]-[5]
-#if (MB_CALLBACK_REG == 1)
-            //=================check EEPROM start==============================
-            mbb->cb_state = mb_cb_check_in_request(RegIndx, 1);
-            if(mbb->cb_state==MB_CB_PRESENT)
+#if (MB_CALLBACK_REG == 1)  // check EEPROM start
+            p_instance->cb_state = mb_cb_check_in_request(reg_indx, 1);
+            if(p_instance->cb_state==MB_CB_PRESENT)
             {
-                mbb->cb_reg_start = RegIndx;
-                mbb->cb_index = 1;
+                p_instance->cb_reg_start = reg_indx;
+                p_instance->cb_index = 1;
             }
-            //=================check EEPROM end==============================
-#endif
-
-#if (MB_LIMIT_REG  == 1)
-            //=================check data start==============================
-            RegIndxInter = RegIndx;
+#endif  // check EEPROM end
+#if (MB_LIMIT_REG  == 1) // check data start
+            reg_indx_iter = reg_indx;
             j = i;
-
-            Value = mbb->p_mb_buff[j++]<<8;
-            Value |= mbb->p_mb_buff[j++];
-            Exception = mb_reg_limit_check_in_request(RegIndxInter, Value);
-            if	(Exception != MBE_NONE)
+            value = p_instance->p_mb_buff[j++]<<8;
+            value |= p_instance->p_mb_buff[j++];
+            exception = mb_reg_limit_check_in_request(reg_indx_iter, value);
+            if	(exception != MBE_NONE)
             {
-                //mbb->cb_state = MB_CB_FREE;
+                //p_instance->cb_state = MB_CB_FREE;
                 break;
             }
-            //=================check data end==============================
-#endif
-            *(mbb->p_write+RegIndx)  = mbb->p_mb_buff[i++]<<8;	// High, then Low byte
-            *(mbb->p_write+RegIndx) |= mbb->p_mb_buff[i++]	;	// ... are packed in a WORD
-
-            mbb->mb_index = 6;	// MBBuff[0] to MBBuff[5] are ready (unchanged)
-
+#endif  // check data end
+            *(p_instance->p_write+reg_indx)  = p_instance->p_mb_buff[i++]<<8;	// High, then Low byte
+            *(p_instance->p_write+reg_indx) |= p_instance->p_mb_buff[i++]	;	// ... are packed in a WORD
+            p_instance->mb_index = 6;	// MBBuff[0] to MBBuff[5] are ready (unchanged)
             break;
         }
-        Exception = MBE_ILLEGAL_DATA_VALUE;	// PDU length incorrect
+        exception = MBE_ILLEGAL_DATA_VALUE;	// PDU length incorrect
         break;
-    //--------------------------------------------------
     default:
-        Exception = MBE_ILLEGAL_FUNCTION;
+        exception = MBE_ILLEGAL_FUNCTION;
         break;
     }
-
     /*
      * At this point the "mb_index" is a length of the response (w/o CRC bytes)
      * mb_index is variable if MB_FUNC_READ_HOLDING_REGISTER, 6 if MB_FUNC_WRITE_MULTIPLE_REGISTERS)
      * but if there's some exception - it will be shortened to 3 in both cases
      */
 
-    if( Exception != MBE_NONE)
+    if( exception != MBE_NONE)
     {
         // Any exception?
-        mbb->p_mb_buff[1] |= MB_FUNC_ERROR;						// Add 0x80 to function code
-        mbb->p_mb_buff[2] =  Exception;							// Exception code
-        mbb->mb_index = 3;										// Length of response is fixed if exception
+        p_instance->p_mb_buff[1] |= MB_FUNC_ERROR;						// Add 0x80 to function code
+        p_instance->p_mb_buff[2] =  exception;							// exception code
+        p_instance->mb_index = 3;										// Length of response is fixed if exception
 #if (MB_CALLBACK_REG == 1)
-        mbb->cb_state = MB_CB_FREE;
+        p_instance->cb_state = MB_CB_FREE;
 #endif
     }
-    i = mb_CRC16( (uint8_t*)mbb->p_mb_buff, mbb->mb_index);				// MBBuff is a pointer, mb_index is a size
-    mbb->p_mb_buff[mbb->mb_index++] = i & 0xFF;						// CRC: Lo then Hi
-    mbb->p_mb_buff[mbb->mb_index  ] = i >> 8;
-    mbb->response_size = mbb->mb_index+1;
-    return NeedResponse? true:false;
+    i = mb_crc16( (uint8_t*)p_instance->p_mb_buff, p_instance->mb_index);   // MBBuff is a pointer, mb_index is a size
+    p_instance->p_mb_buff[p_instance->mb_index++] = i & 0xFF;               // CRC: Lo then Hi
+    p_instance->p_mb_buff[p_instance->mb_index  ] = i >> 8;
+    p_instance->response_size = p_instance->mb_index+1;
+    return need_response? true:false;
 }
 
-void mb_parsing(MBStruct_t *mbb)
+//-----------------------------------------------------------------------
+void mb_parsing(mb_slave_t *p_instance)
 {
-    if( invalid_frame(mbb))
+    if( invalid_frame(p_instance))
     {
-        mbb->mb_state = MB_STATE_IDLE;
-        if (mbb->f_start_receive != NULL)
+        p_instance->mb_state = MB_STATE_IDLE;
+        if (p_instance->start_receive != NULL)
         {
-            mbb->f_start_receive(mbb);
+            p_instance->start_receive(p_instance);
         }
         return;
     }
-
-    if( frame_parse(mbb)) // Returns TRUE if a response is needed
+    if( frame_parse(p_instance)) // Returns TRUE if a response is needed
     {
-        mbb->mb_state = MB_STATE_SEND;
-        mbb->mb_index = 0;
-        mbb->f_start_trans(mbb);
+        p_instance->mb_state = MB_STATE_SEND;
+        p_instance->mb_index = 0;
+        p_instance->start_trans(p_instance);
     }
     else
     {
-        mbb->mb_state = MB_STATE_IDLE;
-        if (mbb->f_start_receive != NULL)
+        p_instance->mb_state = MB_STATE_IDLE;
+        if (p_instance->start_receive != NULL)
         {
-            mbb->f_start_receive(mbb);
+            p_instance->start_receive(p_instance);
         }
     }
 #if (MB_CALLBACK_REG == 1)
-    if  (mbb->cb_state == MB_CB_PRESENT)
+    if  (p_instance->cb_state == MB_CB_PRESENT)
     {
-        mbb->wr_callback(mbb);
-        mbb->cb_state = MB_CB_FREE;
+        p_instance->wr_callback(p_instance);
+        p_instance->cb_state = MB_CB_FREE;
     }
 #endif
+}
+
+void mb_set_address(mb_slave_t *p_instance, uint8_t address)
+{
+    p_instance->slave_address = address;
 }

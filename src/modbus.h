@@ -5,6 +5,19 @@
 #include <stdbool.h>
 #include "modbus_config.h"
 
+//-----------------------------------------------------------------------
+// Configurations (user)
+//-----------------------------------------------------------------------
+#define MB_FRAME_MIN     		4       /* Minimal size of a Modbus RTU frame	*/
+#define MB_FRAME_MAX     		256     /* Maximal size of a Modbus RTU frame	*/
+#define MB_ADDRESS_BROADCAST  	00		/* MBBuff[0] analysis					*/
+//-----------------------------------------------------------------------
+#define MB_ANY_ADDRESS		  	00		/* 0 - any address						*/
+#define MB_MAX_REG				120		/*max quantity registers in inquiry. Should be less than MB_FRAME_MAX considering service bytes. Use for 03 function*/
+
+//-----------------------------------------------------------------------
+// Configurations
+//-----------------------------------------------------------------------
 #ifndef MB_LIMIT_REG
 #define MB_LIMIT_REG            0
 #endif
@@ -25,30 +38,29 @@
 #define MB_USER_ARG2_REG        0
 #endif
 
-#define MB_FRAME_MIN     		4       /* Minimal size of a Modbus RTU frame	*/
-#define MB_FRAME_MAX     		256     /* Maximal size of a Modbus RTU frame	*/
-#define MB_ADDRESS_BROADCAST  	00		/* MBBuff[0] analysis					*/
-
-#define MB_ANY_ADDRESS		  	00		/* 0 - any address						*/
-#define MB_MAX_REG				120		/*max quantity registers in inquiry. Should be less than MB_FRAME_MAX considering service bytes. Use for 03 function*/
-
 #define MB_FUNC_NONE							00
 #define MB_FUNC_READ_COILS						01
 #define MB_FUNC_READ_DISCRETE_INPUTS			02
 #define MB_FUNC_WRITE_SINGLE_COIL				05
 #define MB_FUNC_WRITE_MULTIPLE_COILS			15
 #define MB_FUNC_READ_HOLDING_REGISTER			03	/* implemented now	*/
-#define MB_FUNC_READ_INPUT_REGISTER				04
+#define MB_FUNC_READ_INPUT_REGISTER				04  /* implemented now	*/
 #define MB_FUNC_WRITE_REGISTER					06	/* implemented now	*/
 #define MB_FUNC_WRITE_MULTIPLE_REGISTERS		16	/* implemented now	*/
 #define MB_FUNC_READWRITE_MULTIPLE_REGISTERS	23
 #define MB_FUNC_ERROR							0x80
 
-typedef enum  			// Actually only 1 variable uses this type: er_frame_bad
+typedef enum
+{
+    MB_ERROR 		= 0x00,
+    MB_OK 		    = 0x01
+} mb_error_t;
+
+typedef enum // Actually only 1 variable uses this type: er_frame_bad
 {
     EV_NOEVENT,
     EV_HAPPEND
-} MBEvents_t;
+} mb_events_t;
 
 typedef enum
 {
@@ -56,7 +68,7 @@ typedef enum
     MBE_ILLEGAL_FUNCTION 		= 0x01,
     MBE_ILLEGAL_DATA_ADDRESS	= 0x02,
     MBE_ILLEGAL_DATA_VALUE		= 0x03
-} MBExcep_t;
+} mb_excep_t;
 
 typedef enum
 {
@@ -66,15 +78,16 @@ typedef enum
     MB_STATE_PARS,			// Frame is being parsed (may take some time)
     MB_STATE_SEND,			// Response frame is being sent
     MB_STATE_SENT			// Last byte sent to shift register. Waiting "Last Bit Sent" interrupt
-} MBState_t;
+} mb_state_t;
 
 typedef enum
 {
     MB_CB_FREE = 0,
     MB_CB_PRESENT = 1
-} CBState_t;
+} mb_cb_state_t;
 
-typedef struct  					// Main program passes interface data to Modbus stack.
+typedef struct mb_slave_s mb_slave_t;
+struct  mb_slave_s					// Main program passes interface data to Modbus stack.
 {
     uint16_t    *p_write;			// Pointer to the begin of ParsIn array. Modbus writes data in the array
     uint16_t    *p_read;			// Pointer to the begin of ParsWk array. Modbus takes data from the array
@@ -83,23 +96,51 @@ typedef struct  					// Main program passes interface data to Modbus stack.
 #if (MB_CALLBACK_REG == 1)
     uint16_t    cb_reg_start;		// function modbus write here data start index
     uint8_t	    cb_index;			// and how many registers are pending validation
-    CBState_t   cb_state;			//
+    mb_cb_state_t cb_state;			//
 #endif
     uint8_t     slave_address;		//
     uint8_t	    mb_index;
-    MBState_t   mb_state;
-    MBEvents_t	er_frame_bad;		//
+    mb_state_t  mb_state;
+    mb_events_t er_frame_bad;		//
     uint8_t     *p_mb_buff;			//
     uint8_t		response_size;		                // Set in frame_parse(), used in transmit
 #if (MB_CALLBACK_REG == 1)
-    void   		(*wr_callback) ( void *mbb);    //for span of register, use "mb_reg_option_check" in this function for every register
+    void   		(*wr_callback)(mb_slave_t *p_instance);    //for span of register, use "mb_reg_option_check" in this function for every register
 #endif
-    void    	(*f_start_trans) ( void *mbb);      //start transmit
-    void    	(*f_start_receive) ( void *mbb);    //only if you stop the exchange during parsing, it can be NULL,
+    void    	(*start_trans)(mb_slave_t *p_instance);      //start transmit
+    void    	(*start_receive)(mb_slave_t *p_instance);    //only if you stop the exchange during parsing, it can be NULL,
                                                     //then when using one buffer, check the "mb_state"
                                                     //so as not to change buffer while parsing it
-} MBStruct_t;
+};
+//-----------------------------------------------------------------------
+// Instance
+//-----------------------------------------------------------------------
+#define MB_SLAVE_INSTANCE_DEF(instance_name,            \
+                                main_buf,               \
+                                main_buf_size,          \
+                                write_callback,         \
+                                start_trans_cb,         \
+                                start_recieve_cb)       \
+static uint8_t instance_name##_mb_buf[MB_FRAME_MAX];    \
+static volatile mb_slave_t (instance_name) = {          \
+            .p_write = main_buf,                        \
+            .p_read = main_buf,                         \
+            .reg_read_last = MB_NUM_BUF-1,              \
+            .reg_write_last = MB_NUM_BUF-1,             \
+            .cb_state = MB_CB_FREE,                     \
+            .er_frame_bad = EV_NOEVENT,                 \
+            .mb_state = MB_STATE_IDLE,                  \
+            .p_mb_buff = instance_name##_mb_buf,        \
+            .wr_callback = write_callback,              \
+            .start_trans = start_trans_cb,              \
+            .start_receive = start_recieve_cb,          \
+            .slave_address = MB_ANY_ADDRESS,            \
+            };
+//-----------------------------------------------------------------------
+// Prototypes for functions
+//-----------------------------------------------------------------------
+void mb_parsing(mb_slave_t *p_instance);
+void mb_set_address(mb_slave_t *p_instance, uint8_t address);
 
-void mb_parsing(MBStruct_t *mbb);
 
 #endif /* MODBUS_H_INCLUDED */

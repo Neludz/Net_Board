@@ -106,7 +106,7 @@ void IO_flash_btock(void)
 {
     if (!(FLASH->OBR & FLASH_OBR_RDPRT))
     {
-        mh_Factory();	//when first start -> set MBbuf
+        mh_factory();	//when first start -> set MBbuf
 
         FLASH->KEYR = FLASH_KEY1;
         FLASH->KEYR = FLASH_KEY2;

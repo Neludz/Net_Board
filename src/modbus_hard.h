@@ -6,6 +6,7 @@
 #include "task.h"
 #include "queue.h"
 #include "timers.h"
+#include "modbus.h"
 
 #define	UART_FRIQ	36000000LL
 
@@ -26,20 +27,12 @@ typedef enum
     EVEN_PARITY_1_STOP	= 0x02,
     ODD_PARITY_1_STOP	= 0x03,
 
-} Parity_Stop_Bits_t;
+} parity_stop_bits_t;
 
-void mh_Write_Eeprom (void *mbb);
-void mh_Modbus_Init(void);
-void mh_USB_Init(void);
-void mh_USB_Transmit_Start (void *mbb);
-void mh_USB_Recieve(uint8_t *USB_buf, uint16_t len);
-void mh_RS485_Init(void);
-void mh_Rs485_Transmit_Start (void *mbb);
-void mh_Rs485_Recieve_Start (void *mbb);
-void rs485_timer_callback (xTimerHandle xTimer);
-void IO_Uart3_Init(void);
-void mh_task_Modbus (void *pvParameters);
-void mh_Factory (void);
-void mh_Buf_Init (void);
+void mh_write_eeprom (mb_slave_t *p_instance);
+void mh_modbus_init(void);
+void mh_usb_recieve(uint8_t *USB_buf, uint16_t len);
+void mh_factory (void);
+void mh_buf_init (void);
 
 #endif /* MODBUS_HARD_H_INCLUDED */

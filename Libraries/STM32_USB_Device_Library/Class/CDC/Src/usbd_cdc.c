@@ -478,7 +478,6 @@ __ALIGN_BEGIN const uint8_t USBD_CDC_CfgHSDesc[USB_CDC_CONFIG_DESC_SIZ] __ALIGN_
   */
 static uint8_t  *USBD_CDC_GetHSCfgDesc(uint16_t *length)
 {
- //   printf("get USBD_CDC config desc\n");
   *length = sizeof(USBD_CDC_CfgHSDesc);
   return (uint8_t *) USBD_CDC_CfgHSDesc;
 }
@@ -492,7 +491,6 @@ static uint8_t  *USBD_CDC_GetHSCfgDesc(uint16_t *length)
 */
 uint8_t  *USBD_CDC_GetDeviceQualifierDescriptor(uint16_t *length)
 {
-  //  printf ( "USBD_CDC_GetDeviceQualifierDescriptor\n" );
   *length = sizeof(USBD_CDC_DeviceQualifierDesc);
   return (uint8_t *) USBD_CDC_DeviceQualifierDesc;
 }
