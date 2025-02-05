@@ -33,8 +33,6 @@ void Set_Time_For_Blink (uint32_t On_Timer, uint32_t Off_Timer);
 void Error_Handler(void);
 
 //=========================================================================
-
 // Отдадочная затычка. Сюда можно вписать код обработки ошибок.
 #define	ERROR_ACTION(CODE,POS)		do{}while(1)
-
 #endif /* MAIN_H_ */

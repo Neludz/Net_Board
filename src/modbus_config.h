@@ -41,7 +41,7 @@
     X_BUF(50,	reg_rs485_baud_rate,	0,		1,		0,		0x03,	WRITE_R | CB_WR | LIM_MASK)\
 	X_BUF(51,	reg_rs485_ans_delay,	0,	    5,		0,      100,	WRITE_R | CB_WR | LIM_UNSIGN)\
 	X_BUF(52,	reg_rs485_modbus_addr,  0,		127,    1,		0xFA,	WRITE_R | CB_WR | LIM_UNSIGN)\
-	X_BUF(53,	Reg_Parity_Stop_Bits,	0,	    0,	    0,		0x03,	WRITE_R | CB_WR | LIM_UNSIGN)\
+	X_BUF(53,	reg_parity_stop_bits,	0,	    0,	    0,		0x03,	WRITE_R | CB_WR | LIM_UNSIGN)\
     X_BUF(54,	Reg_54_Optic_Mode,      0,		MB_MODE_MODERN,\
                                                         0,      1,      WRITE_R | CB_WR | LIM_MASK)\
 	X_BUF(55,	Reg_End,				0,	    0,      0,      0,      READ_R)\

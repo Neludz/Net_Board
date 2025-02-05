@@ -346,7 +346,7 @@ void optic_parse_legacy(OpticStruct_t *opt_data, uint32_t opt_channel)
 //-------------------------------------------------------------------------
 void optic_legacy_periodic_lan_error_set(OpticStruct_t *opt_data)
 {
-    for(uint32_t i=0; i<LEGACY_CHANNEL_COUNT; i++)
+    for(uint32_t i = 0; i<LEGACY_CHANNEL_COUNT; i++)
     {
         (opt_data->legacy_error_count[i])++;
         if(opt_data->legacy_error_count[i] >= OPTIC_LEGACY_ERROR_MAX)

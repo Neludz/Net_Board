@@ -195,7 +195,7 @@ static void io_uart3_init(void)
     LL_USART_EnableIT_RXNE(USART3);
     LL_USART_EnableIT_TC(USART3);
     //LL_USART_EnableIT_TXE(USART3);
-    switch (mb_buf_main[Reg_Parity_Stop_Bits])
+    switch (mb_buf_main[reg_parity_stop_bits])
     {
     case NO_PARITY_1_STOP:
         break; //default setting
@@ -220,15 +220,13 @@ static void io_uart3_init(void)
 }
 
 //-----------------------------------------------------------------------
-void mh_write_eeprom (mb_slave_t *mbb)
+void mh_write_eeprom (mb_slave_t *p_instance)
 {
-    mb_slave_t *st_mb;
-    st_mb = (void*) mbb;
-    for (int32_t i = 0; i < (st_mb->cb_index); i++)
+    for (int32_t i = 0; i < (p_instance->cb_index); i++)
     {
-        if((mbreg_option_check(i+(st_mb->cb_reg_start), CB_WR) == MB_OK))
+        if((mbreg_option_check(i+(p_instance->cb_reg_start), CB_WR) == MB_OK))
         {
-            EE_UpdateVariable(((st_mb->cb_reg_start)+i), st_mb->p_write[i+(st_mb->cb_reg_start)]);
+            EE_UpdateVariable(((p_instance->cb_reg_start)+i), p_instance->p_write[i+(p_instance->cb_reg_start)]);
         }
     }
 }
@@ -255,7 +253,7 @@ void mh_usb_recieve(uint8_t *usb_buf, uint16_t len)	//interrupt	function
 void mh_modbus_init(void)
 {
     //create queue
-    xModbusQueue=xQueueCreate(3, sizeof(mb_slave_t *));
+    xModbusQueue = xQueueCreate(3, sizeof(mb_slave_t *));
     //create modbus task
     if(pdTRUE != xTaskCreate(mh_task_modbus, "rs485", MODBUS_TASK_STACK_SIZE, NULL, MODBUS_TASK_PRIORITY, &modbus_task_handle)) ERROR_ACTION(TASK_NOT_CREATE, 0);
     mb_rs485.slave_address = IO_GetLineActive(io_addr0) | IO_GetLineActive(io_addr1) << 1 | IO_GetLineActive(io_addr2) << 2 | IO_GetLineActive(io_addr3) << 3;

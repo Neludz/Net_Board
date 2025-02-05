@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------
 // Configurations
 //-----------------------------------------------------------------------
-
 typedef struct
 {
     uint16_t		default_value;
@@ -31,7 +30,7 @@ enum
 #define X_BUF(a,b,c,d,e,f,g) b=a,
     MB_BUF_TABLE
 #undef  X_BUF
-    MB_NUM_BUF=(REG_END_REGISTER+1)
+    MB_NUM_BUF = (REG_END_REGISTER+1)
 };
 #endif
 //-----------------------------------------------------------------------

@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "modbus_config.h"
-
 //-----------------------------------------------------------------------
 // Configurations (user)
 //-----------------------------------------------------------------------
@@ -14,7 +13,6 @@
 //-----------------------------------------------------------------------
 #define MB_ANY_ADDRESS		  	00		/* 0 - any address						*/
 #define MB_MAX_REG				120		/*max quantity registers in inquiry. Should be less than MB_FRAME_MAX considering service bytes. Use for 03 function*/
-
 //-----------------------------------------------------------------------
 // Configurations
 //-----------------------------------------------------------------------
