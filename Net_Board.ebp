@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <EmBitz_project_file>
-	<EmBitzVersion release="2.62" revision="0" />
+	<EmBitzVersion release="2.63" revision="0" />
 	<FileVersion major="2" minor="0" />
 	<Project>
 		<Option title="Net_Board" />
@@ -285,6 +285,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\optic_data.h" />
+		<Unit filename="src\optic_data_sys.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\optic_data_sys.h" />
 		<Unit filename="src\startup_stm32f103xb.S">
 			<Option compilerVar="CC" />
 			<Option weight="0" />

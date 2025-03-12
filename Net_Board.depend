@@ -427,12 +427,12 @@
 	"usb_device.h"
 	"log_nel.h"
 
-1732260207 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_reg.h
+1732196434 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_reg.h
 	<stdint.h>
 	"modbus_config.h"
 	"modbus.h"
 
-1732270674 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_config.h
+1732270686 d:\dropbox\gg\rectifier\code\net_board_embitz\src\modbus_config.h
 	<stdint.h>
 	"main.h"
 
@@ -443,7 +443,7 @@
 
 1678699684 d:\dropbox\gg\rectifier\code\net_board_embitz\src\clock.h
 
-1718892402 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.h
+1741784945 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.h
 	<stdint.h>
 	<stdbool.h>
 
@@ -492,7 +492,8 @@
 	"modbus_reg.h"
 	"modbus.h"
 
-1732197011 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.c
+1741784973 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data.c
+	<optic_data_sys.h>
 	<optic_data.h>
 	<stdint.h>
 	<stdbool.h>
@@ -585,4 +586,14 @@
 1718294703 d:\dropbox\gg\rectifier\code\net_board_embitz\src\log_nel.h
 	<stdio.h>
 	<string.h>
+
+1741784945 source:d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data_sys.c
+	<optic_data_sys.h>
+	<stdint.h>
+	<stdbool.h>
+	<stdio.h>
+
+1741785031 d:\dropbox\gg\rectifier\code\net_board_embitz\src\optic_data_sys.h
+	<stdint.h>
+	<stdbool.h>
 
