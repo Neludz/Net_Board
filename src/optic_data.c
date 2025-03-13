@@ -115,7 +115,7 @@ void v_optic_task (void *pvParameters)
     while(1)
     {
         // check if one size error when multiplexer switch on a middle of the frame.
-        if (optic_data.frame_error != OPT_RET_SIZE_ERROR && optic_data.error_count[i] != 1)
+        if ((optic_data.frame_error == OPT_RET_TIMEOUT && optic_data.error_count[i] == 1) || optic_data.error_count[i] != 1)
         {
             i++;
             if (i >= OPTIC_CHANNEL_COUNT_PHY)
