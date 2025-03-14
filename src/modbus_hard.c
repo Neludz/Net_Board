@@ -44,14 +44,12 @@ static void io_uart3_init(void);
 //-----------------------------------------------------------------------
 MB_SLAVE_INSTANCE_DEF(mb_rs485,\
                       mb_buf_main,\
-                      MB_NUM_BUF,\
                       mh_write_eeprom,\
                       mh_rs485_transmit_start,\
                       NULL)
 
 MB_SLAVE_INSTANCE_DEF(mb_usb,\
                       mb_buf_main,\
-                      MB_NUM_BUF,\
                       mh_write_eeprom,\
                       mh_usb_transmit_start,\
                       NULL)

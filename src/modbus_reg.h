@@ -38,7 +38,6 @@ enum
 //-----------------------------------------------------------------------
 #define MB_SLAVE_INSTANCE_DEF(instance_name,            \
                                 main_buf,               \
-                                main_buf_size,          \
                                 write_callback,         \
                                 start_trans_cb,         \
                                 start_recieve_cb)       \
